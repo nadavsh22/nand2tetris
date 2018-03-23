@@ -1,0 +1,18 @@
+nadavsh22, mfocshaner
+The second part of the VM Trnslator, now handeling program control
+
+                           Project 8 - Virtual Machine 
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+VMtranslator.py
+VMtranslator - Script to run the VMTranslator.py file with the latest version of python3
+Makefile
+VMConsts.py
+Parser.py
+CodeWriter.py
+-------
+
