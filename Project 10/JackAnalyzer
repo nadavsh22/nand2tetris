@@ -1,0 +1,2 @@
+#!/bin/sh
+python3 Run.py $1

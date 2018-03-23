@@ -1,0 +1,19 @@
+nadavsh22, mfocshaner
+
+The first stage of building a compiler, outputing an XML file specifying the analized input JACK code.
+
+                           Project 10 - Compiler 
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+JackAnalyzer.py
+JackAnalyzer - Script to run the Run.py file with the latest version of python3
+Makefile
+Consts.py
+JackTokenizer.py
+CompilationEngine.py
+-------
+
