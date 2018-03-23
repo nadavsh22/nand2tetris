@@ -1,0 +1,18 @@
+nadavsh22, mfocshaner
+A VM Translator from VM commands to Hack assembly
+
+                           Project 7 - Virtual Machine (Arithmetic)
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+VMtranslator.py
+VMtranslator - Script to run the Assembler.py file with the latest version of python3
+Makefile
+VMConsts.py
+Parser.py
+CodeWriter.py
+-------
+
