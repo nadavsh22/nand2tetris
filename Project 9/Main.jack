@@ -1,0 +1,37 @@
+class Main{
+
+	function void runGame(){
+		var SnakeGame game;
+		let game = SnakeGame.new();
+		do game.run();
+		do game.dispose();
+		return;
+	}
+
+	function void main(){
+		var int key;
+		var String s1,s2,s3;
+		let s1 = String.new(8);
+		let s1 = "SNAKE!!!";
+		let s2 = String.new(21);
+		let s2 = "press any key to play";
+		let s3 = String.new(28);
+		let s3 = "Good Game, now give me a 100";
+		do Output.moveCursor(11,22);
+		do Output.printString(s1);
+		do Output.moveCursor(12,22);
+		do Output.printString(s2);
+		while (key = 0){
+			let key = Keyboard.keyPressed();
+		}
+		do Screen.clearScreen();
+		do Main.runGame();
+		do Output.moveCursor(11,22);
+		do Output.printString(s3);
+		do Sys.wait(5000);
+		do s1.dispose();
+		do s3.dispose();
+		do s2.dispose();
+		return;
+	}
+}

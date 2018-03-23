@@ -1,0 +1,222 @@
+class Snake {
+	field int direction;
+	field Array locs;
+	field int arrSize;
+	field int size;
+	field int width; // snake width
+	field int scr_w, scr_h; // screen borders
+
+	// constructs a new snake object
+	// and puts it to the screen
+	constructor Snake new(int screen_w, int screen_h){
+		var int i, j, x, x_2, y, y_2;
+		let direction = 3; // down
+		let size = 4; // init size
+		let width = 7; // width of snake unit
+		let locs = Array.new(16*size);
+		let arrSize = 16*size;
+		let scr_w = screen_w;
+		let scr_h = screen_h;
+		
+		let i = 0;
+		do Screen.setColor(true); // black
+		
+		while (i < size){
+			let x = 28-(i*width);
+			let y = 28;
+			let x_2 = x + width;
+			let y_2 = y + width;
+			do Screen.drawRectangle(x,y,x_2,y_2);
+			let j = (2*(size-1 - i));  // i = 0 ; j = 8 ; 0 1 2 3 4 5 6 7 8 9
+			let locs[2*i] = x;           // i = size-2; j = 2
+			let locs[2*i+1] = y;
+			let i = i + 1;
+		}
+
+		return this;
+		}
+
+	//**disposer*/
+	method void dispose(){
+		do locs.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+	// this method moves the snake according to current direction
+	method void move()
+	{
+		var int j, x, x_2, y, y_2;
+		var boolean collide;
+		
+		let j = ((2*(size-1))); // the last x coordinate
+
+		if (direction = 0)
+		{
+			return;
+		}
+
+		// removing the tail
+		let x = locs[j];
+		let y = locs[j+1];
+		let x_2 = x + width;
+		let y_2 = y + width;
+		do Screen.setColor(false); // white
+		do Screen.drawRectangle(x,y,x_2,y_2);
+
+		// updating all other parts of the snake
+
+		while ((j+1) > 0)
+		{
+				if (j > 0) // we want to update all non-head parts
+					{  
+						let locs[j] = locs[j-2];
+						let locs[j+1] = locs[j-1];
+						let x_2 = locs[j] + width;
+						let y_2 = locs[j+1] + width;
+						if (j<((2*size)-1)) {
+						do Screen.setColor(true); // black
+						do Screen.drawRectangle(locs[j],locs[j+1],x_2,y_2);
+						}
+					} 
+				else {  			// this is the new head
+					if (direction = 1) {  		// up
+									let y = locs[1];
+									let y = y - width;
+									let locs[1] = y;
+						}
+					if (direction = 2) 			// right
+						{  
+									let x = locs[0]; 
+									let x = x + width;
+									let locs[0] = x;
+						}
+					if (direction = 3)   // down
+						{
+									let y = locs[1];
+									let y = y + width;
+									let locs[1] = y;
+						}
+					if (direction = 4)  // left
+						{
+									let x = locs[0]; 
+									let x = x - width;
+									let locs[0] = x;
+						}
+						let collide = checkColl();
+						if (~collide){
+						let x = locs[0];
+						let y = locs[1];
+						let x_2 = x + width;
+						let y_2 = y + width;
+						do Screen.setColor(true); // black
+						do Screen.drawRectangle(x,y,x_2,y_2);}
+				}	
+				let j = j - 2;
+		}
+		return;
+	}  // end of move
+
+	// changes the snake's direction, if it is a legal turn.
+	method void changeDir(int newDir)
+	{
+		if (direction = newDir)
+		{
+			return; // do nothing
+		}
+		if (((newDir = 1) | (newDir = 3)) & ((direction = 2) | (direction = 4))) // up or down
+		{
+			let direction = newDir;
+			return;
+		}
+		if (((newDir = 2) | (newDir = 4)) & ((direction = 1) | (direction = 3))) // left or right
+		//(((newDir = 2) | (newDir = 4) & (direction = 1) | (direction = 3))) 
+		{  
+			let direction = newDir;
+			return;
+		}
+		//do move();
+		return;			
+	} // end of changeDir
+
+
+	// returns an array of the two head coordinates
+	method int giveHeadX()
+	{
+		return locs[0];
+	}
+
+	method int giveHeadY()
+	{
+		return locs[1];
+	}
+
+		// increases the size of the snake by 1; duplicates the last location so that
+	// it is updated visually at the next movement
+	method void getFat()
+	{
+		var Array newlocs;
+		var int newSize, temp, i;
+		if (size*2 = (arrSize-2)){
+			let newSize = 2*arrSize;  // new size of array
+
+			let newlocs = Array.new(newSize);
+			let newlocs[newSize-1] = locs[newSize-3];
+			let newlocs[newSize-2] = locs[newSize-4];
+		
+			let i = (newSize-3); // last
+			while ((i > 0) | (i = 0)){
+				let newlocs[i] = locs[i];
+				let i = i-1;
+			}
+			let i = 0;
+			do locs.dispose();
+			let locs = Array.new(newSize);
+			while(i < newSize){
+				let locs[i] = newlocs[i];
+				let i = i + 1;
+			}
+			do newlocs.dispose();
+			let size = size +1;
+			let arrSize = newSize;
+			return;
+		}else { // just duplicate the last snake unit
+			let size = size +1;
+			let locs[2*size-1] = locs[2*size-3];
+			let locs[2*size-2] = locs[2*size-4];
+		}
+		return;
+		
+	}
+
+	// check whether the snake's head collides with its body
+	// or goes out of the walls
+	method boolean checkColl()
+	{
+		var int i, temp;
+		let i = 2;
+
+		if ((locs[0] < 0) | (locs[0] > (scr_w - width)) | (locs[1] < 0) | (locs[1] > (scr_h - width))) 
+		{
+			return true; // snake out of bounds of screen;
+		}
+		while (i < (2*size)) // check for collision with body parts
+		{
+			if ((locs[0] = locs[i]) & (locs[1] = locs[i+1]))
+			{
+				return true;
+			}
+			let i = i+2;
+		}
+		return false;
+	}
+
+}
+
+
+
+// directions:
+// 0 = no direction
+// 1 = up
+// 2 = right
+// 3 = down
+// 4 = left

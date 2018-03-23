@@ -1,0 +1,23 @@
+nadavsh22, mfocshaner
+
+Game written in the JACK language for the hack platform
+
+                           Project 9 - high level language
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+Apple.jack - apple object
+Main.jack - includes the main function running the game
+SnakeGame.jack - a game object
+Snake.jack - a snake object
+
+
+Remarks
+-------
+The loved snake game. Use arrow keys to navigate the snake and eat as much apples as possible.
+Press space bar to pause, and esc to stop the game.
+Have Fun!
+

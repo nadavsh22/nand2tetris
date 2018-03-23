@@ -1,0 +1,144 @@
+/**Implements the SnakeGame*/
+class SnakeGame {
+
+	//static variables for keys
+	static int up;
+	static int left;
+	static int right;
+	static int down;
+	static int esc;
+	static int pause;
+	
+	//fields
+
+	field int score; // user score
+	field Snake snake; // the snake object
+	field Apple apple; // apple object
+	field int direction; // 0=none,1=up,2=right,3=down,4=left
+
+	/**Constructor*/
+	constructor SnakeGame new(){
+		//creates a new snake and locate it at the head of  
+		//the screen
+		let direction = 3;
+		let left = 130;
+		let up = 131;
+		let right = 132;
+		let down = 133;
+		let esc = 140;
+		let pause = 32;
+	
+		let snake = Snake.new(511,255);
+		let apple = Apple.new();
+		let score = 0;
+		return this;
+	}
+
+	/**Disposer*/
+	method void dispose(){
+		
+		do snake.dispose();
+		do apple.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+
+	//Methods
+
+	/**pause game until any key is pressed */
+	method void pauseGame(){
+		var char key;
+		var String s;
+		let s = String.new(35);
+		let s = "PAUSE, press any key(but not space)";
+		do Screen.clearScreen();
+		do Output.moveCursor(0,0);
+		do Output.printString(s);
+		do s.dispose();
+		while(key = 0){
+			let key = Keyboard.keyPressed();
+		}
+		//do snake.draw();
+		do Screen.clearScreen();
+		do apple.draw();
+		return;
+	}
+
+	/**draw the score on the bottom of the board*/
+	method void drawScore(){
+		var String s;
+		do Output.moveCursor(22,0);
+		let s = String.new(7);
+		let s = "Score: " ;
+		do Output.printString(s);
+		do s.dispose();
+		//do Output.moveCursor(22,7);
+		do Output.printInt(score);
+		return;
+	}
+
+	/**announce that the game is over to user and free memory*/
+	method void gameOver(){
+		var String s;
+		do Screen.clearScreen();
+		do Output.moveCursor(8,22);
+		do Output.printString("GAME OVER (loser)");
+		do drawScore();
+		return;
+	}
+	/** handle user input and run the game */
+ 	method void run(){
+		var Array snakeLoc, appleLoc;
+		var int key;
+		var boolean exit, collide;
+		let exit = false;
+		let collide = false;
+		let snakeLoc = Array.new(2);
+		do  drawScore();
+		while(~exit){
+		// wait for a key to be pressed
+			while (key = 0){
+			// advance snake in current direction as
+			// long as direction isn't changed
+				do snake.move();
+				do apple.draw();
+				let collide = snake.checkColl();
+				if(collide) {
+					do gameOver();
+					return; 
+				}
+				//check if he's been eating
+				let snakeLoc[0] = snake.giveHeadX();
+				let snakeLoc[1] = snake.giveHeadY();
+				let appleLoc=apple.getLoc();
+				if (appleLoc[0] = snakeLoc[0]){
+					if(appleLoc[1] = snakeLoc[1]){
+						let score = score + 1;
+						do drawScore();
+						do apple.changeLoc();
+						do apple.draw();
+						do snake.getFat();
+					}
+				}
+				let key = Keyboard.keyPressed();
+				do Sys.wait(50);
+			}	
+				do Output.moveCursor(0,0);
+				if (key = esc)	 {let exit = true;}
+				if (key = pause) {do pauseGame(); }
+				if (key = up)    {let direction = 1;}
+				if (key = right) {let direction = 2;}
+				if (key = down)  {let direction = 3;}
+				if (key = left)	 {let direction = 4;}
+
+				//change snakes direction
+				do snake.changeDir(direction);
+				if (exit) { 
+					do snakeLoc.dispose();
+					return;
+				}
+				let key = 0;
+		}
+		return;
+	}
+}

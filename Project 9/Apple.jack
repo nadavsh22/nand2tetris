@@ -1,0 +1,94 @@
+/**apple object*/
+class Apple{
+
+	//fields
+	field Array loc;
+	field Array locations;
+	field int counter;
+
+	/**constructor*/
+	constructor Apple new(){
+
+		let loc=Array.new(2);
+		let locations=Array.new(40);
+		let locations[0]=Math.abs(-252);
+		let locations[1]=126;
+		let locations[2]=140;
+		let locations[3]=210;
+		let locations[4]=350;
+		let locations[5]=217;
+		let locations[6]=301;
+		let locations[7]=231;
+		let locations[8]=413;
+		let locations[9]=14;
+		let locations[10]=28;
+		let locations[11]=189;
+		let locations[12]=56;
+		let locations[13]=224;
+		let locations[14]=343;
+		let locations[15]=49;
+		let locations[16]=490;
+		let locations[17]=70;
+		let locations[18]=343;
+		let locations[19]=98;
+		let locations[20]=119;
+		let locations[21]=119;
+		let locations[22]=14;
+		let locations[23]=91;
+		let locations[24]=35;
+		let locations[25]=49;
+		let locations[26]=448;
+		let locations[27]=161;
+		let locations[28]=21;
+		let locations[29]=147;
+		let locations[30]=28;
+		let locations[31]=210;
+		let locations[32]=315;
+		let locations[33]=91;
+		let locations[34]=469;
+		let locations[35]=84;
+		let locations[36]=350;
+		let locations[37]=238;
+		let locations[38]=63;
+		let locations[39]=21;
+		let loc[0]=locations[0];
+		let loc[1]=locations[1];
+		let counter = 0;
+		return this;	
+	}
+
+
+	/**disposer*/
+	method void dispose(){
+
+		do loc.dispose();
+		do locations.dispose();
+		do Memory.deAlloc(this);
+		return;
+	}
+
+	//methods
+	/**draw an apple to location*/
+	method void draw(){
+		var int location;
+		let location = (loc[1]*32)+loc[0];
+		do Screen.setColor(true);
+		do Screen.drawRectangle(loc[0],loc[1],loc[0]+7,loc[1]+7);
+		return;
+	}
+
+	/**change apple location*/
+	method void changeLoc(){
+		var int localCounter;
+		let counter = counter + 1;
+		if ( counter = 20) { let counter = 0;}
+		//do erase(loc[0], loc[1]);
+		let loc[0] = locations[counter*2];
+		let loc[1] = locations[counter*2 + 1];
+		return;
+	}
+	/**return apple location*/
+	method Array getLoc(){
+		return loc;
+	}
+}
