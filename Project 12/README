@@ -1,0 +1,19 @@
+nadavsh22, mfocshaner
+
+The final project of the course, an OS for the HACK platform written in JACK
+
+               		Project 12 - OS
+               ------------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+Array.jack 
+Keyboard.jack 
+Math.jack 
+Memory.jack 
+Output.jack
+Screen.jack
+String.jack
+Sys.jack

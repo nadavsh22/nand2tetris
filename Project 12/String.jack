@@ -1,0 +1,175 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/String.jack
+
+/**
+ * Represents character strings. In addition for constructing and disposing
+ * strings, the class features methods for getting and setting individual
+ * characters of the string, for erasing the string's last character,
+ * for appending a character to the string's end, and more typical
+ * string-oriented operations.
+ */
+class String {
+    
+    field int length, maxLen;
+    field Array str;
+
+    /** constructs a new empty string with a maximum length of maxLength
+     *  and initial length of 0. */
+    constructor String new(int maxLength) {
+        if (maxLength < 1) 
+        { 
+            let maxLen = 1;
+        } // originally do Sys.error(14);} // Maximum length must be non-negative
+        let maxLen = maxLength;
+        let str = Array.new(maxLength); 
+        let length = 0;
+        
+        return this;
+    }
+
+    /** Disposes this string. */
+    method void dispose() {
+    do Memory.deAlloc(this);
+    return;
+    }
+
+    /** Returns the current length of this string. */
+    method int length() {
+    return length;
+    }
+
+    /** Returns the character at the j-th location of this string. */
+    method char charAt(int j) {
+    if (~(j < length)) { return 0;} //do Sys.error(15);} // String index out of bounds
+    return str[j];
+    }
+
+    /** Sets the character at the j-th location of this string to c. */
+    method void setCharAt(int j, char c) {
+    if (~(j < maxLen)) { return;} //do Sys.error(16);} // String index out of bounds
+    let str[j] = c;
+    return;
+    }
+
+    /** Appends c to this string's end and returns this string. */
+    method String appendChar(char c) {
+    if (~(length < maxLen)) { return this;} //do Sys.error(17);} // String is full
+    let str[length] = c;
+    let length = length + 1;
+    return this;
+    }
+
+    /** Erases the last character from this string. */
+    method void eraseLastChar() {
+    if (~(length > 0)) { return;} //do Sys.error(18);} // String is empty
+    let str[length] = 0;
+    let length = length - 1;
+    return;
+    }
+
+    /** Returns the integer value of this string, 
+     *  until a non-digit character is detected. */
+    method int intValue() {
+    var int value, i, digit;
+    var boolean sign;
+
+    if (length = 0) { return 0;} // empty string
+    
+    let value = 0;
+
+    // first letter (might be minus)
+    
+    let digit = str[0];
+    let sign = (digit = 45); // 45 is minus; hence it's true if negative
+    if (sign) {let i = 1;} // first is minus, start reading from second character
+    else {let i = 0;}
+
+    while (i < length)
+    {
+        let digit = str[i];
+        if (~((digit < 47) | (digit > 57))) // read until first non-digit 
+            {
+                let value = 10*value + digit - 48;
+                let i = i + 1;
+            }
+        else
+        {
+            if (sign) {return -value;}
+            return value;
+        }
+    }
+    if (sign) {return -value;}
+    return value;
+    }
+
+    /** helper method, reverses current string. Actually modifies it. */
+    method void revString() 
+    {
+    var int i, j, k;
+    var char temp;
+    if (length = 0) { return;}
+
+    let i = length-1; // decreasing index
+    let k = 0;  // increasing index
+    let j = i + i; // we'll use this to have less multiplications
+    while (~(j < length)) // 2i >= length (this is needed for handling odd and even lengths
+    {
+        let temp = str[i];
+        let str[i] = str[k];
+        let str[k] = temp;
+
+        let i = i -1;
+        let k = k + 1;
+        let j = j - 2; // j is 2*i at all times
+    }
+    return;
+    }
+
+    /** Sets this string to hold a representation of the given value. */
+    method void setInt(int val) 
+    {
+    var int lastDigit, prevVal;
+    var char digit;
+    var boolean neg;
+    let length = 0; // reset the string
+
+    if (val < 0) 
+    {
+        let val = -val;
+        let neg = true;
+    }
+    else { if (val = 0) { do appendChar(48); return;}} // set value to 0
+    
+    while (val > 0)
+        { 
+            if (length = maxLen) { return;} // do Sys.error(19);} // Insufficient string capacity
+            let prevVal = val;
+            let val = (val/10);
+            let lastDigit = prevVal - (val*10); // these 2 lines are effectively val % 10;
+            do appendChar((lastDigit+48)); // convert digit to ascii and append it
+        }
+    if (neg) {do appendChar(45);} // minus sign
+    do revString();
+    return;
+    }
+
+
+
+
+    /** Returns the new line character. */
+    function char newLine() {
+    return 128;
+    }
+
+    /** Returns the backspace character. */
+    function char backSpace() {
+    return 129;
+    }
+
+    /** Returns the double quote (") character. */
+    function char doubleQuote() {
+    return 34;
+    }
+}

@@ -1,0 +1,92 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Memory.jack
+
+/**
+ * This library provides two services: direct access to the computer's main
+ * memory (RAM), and allocation and recycling of memory blocks. The Hack RAM
+ * consists of 32,768 words, each holding a 16-bit binary number.
+ */ 
+class Memory {
+    static Array ram;
+    static Arrey freeList;
+    static int heapLength;
+
+    /** Initializes the class. */
+    function void init() {
+    	let ram = 0;
+        let heapLength = 16384 - 2048;
+    	let freeList = 2048;
+    	let freeList[0] = null; //freeList.next
+    	let freeList[1] = heapLength - 2; //freeList.Size
+    	return;
+    }
+
+    /** Returns the RAM value at the given address. */
+    function int peek(int address) {
+     return ram[address];
+    }
+
+    /** Sets the RAM value at the given address to the given value. */
+    function void poke(int address, int value) {
+    	let ram[address] = value;
+    	return;
+    }
+
+    /** Finds an available RAM block of the given size and returns
+     *  a reference to its base address. using first-fit */
+    function int alloc(int size) {
+    	var Array currentSegment, prevSegment, block;
+    	let currentSegment = freeList;
+    	let prevSegment = null; 
+
+		while ((~(currentSegment[1] > size )) & (~(currentSegment[0] = null))){ 
+		//stop loop when a sufficient sized segment is found
+			let prevSegment = currentSegment;
+			let currentSegment = 2048 + currentSegment[0];
+    		}
+    
+    	//check if the loop ended because no more segments, or because a fit was found
+    	if (currentSegment[1] < size){
+    		do Sys.error(5);
+    	}
+
+    	if ((currentSegment[1] - size) > 1){ // remainder is big enough to reuse
+    		let block = currentSegment + 2 + currentSegment[1] - size - 1;
+    		let currentSegment[1] = currentSegment[1] - size - 1;
+    		let block[0] = size + 1;
+    		return (block + 1);
+    	}
+    	else{
+    		if (prevSegment = null){ // segment is the first on heap
+    			let freeList = 2048 + currentSegment[0];
+    			let block = currentSegment;
+    			let block[0] = currentSegment[1] + 1;
+    			return block + 1;
+    		}else { //segment is the last in heap\middle of heap
+    			let prevSegment[0] = null;
+    			let block = currentSegment;
+    			let block[0] = currentSegment[1] + 1;
+    			return block + 1;
+    		
+    		}
+
+    	}
+    }
+
+    /** De-allocates the given object (cast as an array) by making
+     *  it available for future allocations. */
+    function void deAlloc(Array o) {
+    	var Array segment, currentSegment;
+    	var int length;
+    	let segment = o - 1;
+    	let length = segment[0];
+    	let segment[0] = freeList[0];
+    	let segment[1] = length - 1;
+    	let freeList = segment;
+    	return;
+    	}
+
+}    
+

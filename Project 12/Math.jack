@@ -1,0 +1,167 @@
+// This file is part of www.nand2tetris.org
+// and the book "The Elements of Computing Systems"
+// by Nisan and Schocken, MIT Press.
+// File name: projects/12/Math.jack
+
+/**
+ * A library of commonly used mathematical functions.
+ * Note: Jack compilers implement multiplication and division using OS method calls.
+ */
+class Math {
+
+	static Array twoToThe;
+	static int twoqy; // used in the division to avoid multiplication
+
+    /** Initializes the library. */
+    function void init() {
+    var int twopow, i;
+    let twoqy = 0;
+    let twoToThe = Array.new(16);
+    let twoToThe[0] = 1;
+    let twoToThe[1] = 2;
+    let twoToThe[2] = 4;
+    let twoToThe[3] = 8;
+    let twoToThe[4] = 16;
+    let twoToThe[5] = 32;
+    let twoToThe[6] = 64;
+    let twoToThe[7] = 128;
+    let twoToThe[8] = 256;
+    let twoToThe[9] = 512;
+    let twoToThe[10] = 1024;
+    let twoToThe[11] = 2048;
+    let twoToThe[12] = 4096;
+    let twoToThe[13] = 8192;
+	let twoToThe[14] = 16384;
+    let twoToThe[15] = 16384+16384; // 1 and 15 zeros
+    return;
+    }
+
+    /** Returns the absolute value of x. */
+    function int abs(int x) {
+    if (x > 0)
+    	{
+    	return (x);
+    	}
+    	else {  // else, if x<=0, we return -x
+    	return (-x);
+    	}
+    
+    }
+
+    /** Returns the product of x and y. 
+     *  When a Jack compiler detects the multiplication operator '*' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x*y and multiply(x,y) return the same value.
+     */
+    function int multiply(int x, int y) {
+    var int sum, shiftedX, i;
+    let sum = 0;
+    let shiftedX = x;
+    let i = 0;
+    while (i < 16) // we have 16-bit numbers
+    {
+    	if (Math.bit(y,i))
+    	{
+    	let sum = sum + shiftedX;
+    	}
+    	let i = i+1;
+    	let shiftedX = shiftedX+shiftedX;
+    	
+    }
+    return sum;
+    }
+
+    /** Returns the integer part of x/y.
+     *  When a Jack compiler detects the multiplication operator '/' in the 
+     *  program's code, it handles it by invoking this method. In other words,
+     *  the Jack expressions x/y and divide(x,y) return the same value.
+     */
+    function int divide(int x, int y) 
+    {
+
+    var int q, retval, twoq;
+    var boolean positive;
+    let positive = ((x < 0) = (y < 0));
+
+    let x = Math.abs(x);
+    let y = Math.abs(y);
+
+    let retval = Math.divHelper(x,y);
+
+    if (positive) {return retval;}
+    else {return -retval;}
+}
+
+
+
+    /** a helper function to perform divide, on two positive integers */
+    function int divHelper(int x, int y)
+    {
+        var int q;
+        if ((y > x) | (y<0))  // y<0 - avoid overflow
+        {
+            let twoqy = 0;  // use the static field to keep score between recursion calls
+            return 0;
+        }
+
+        let q = Math.divHelper(x,y+y);
+    
+        if ((x - twoqy) < y) // x - 2qy < y
+        {
+            return q+q;
+        }
+        else
+        {
+            let twoqy = twoqy + y; // use the static field to keep score between recursion calls
+            return q+q+1;
+            }
+
+    }
+
+
+
+    /** Returns the integer part of the square root of x. */
+    function int sqrt(int x) 
+    {
+    	var int y, i, guess, guessSq;
+    	let y = 0;
+    	let i = 7; // this is the number of bits (16)/2= (8) - 1 = 7
+    	while (~(i<0)) 	 // i>=0
+    	{
+    		let guess = y+twoToThe[i]; // y + 2^j
+    		let guessSq = guess * guess; // (y+2^j)^2
+    		if ((~(guessSq > x)) & (guessSq > 0)) /** guess squared <= x, and doesn't overflow */
+    		{
+    			let y = guess;
+    		}
+    		let i = i-1;
+    	}
+    	return y;
+    }
+
+    /** Returns the greater number. */
+    function int max(int a, int b) {
+    if (a<b) {return b;}
+    else {return a;}  // else: a>=b
+    }
+
+    /** Returns the smaller number. */
+    function int min(int a, int b) {
+    if (a<b) {return a;}
+    else {return b;}
+     // else: a<=b
+    }
+
+    /** Helper function, returns true if the i'th bit of x is 1, else false. */
+    function boolean bit(int x, int i) {
+    	return ~((x & twoToThe[i]) = 0); 
+    	// if the i'th bit is not 1, the and 'product' will be zero.
+    	// if the i'th bit is 1, the and 'product' will be equal to twoToThe[i] != 0.
+    	// thus we negate the expression in brackets.
+    }
+
+    /** helper function for other classes */
+    function int TwoToTheI(int i){
+        return twoToThe[i];
+    }
+}
