@@ -1,0 +1,24 @@
+nadavsh22, mfocshaner
+
+A full and functional JACK compiler 
+
+                           Project 11 - Compiler 
+                           ----------------------- 
+  
+
+Submitted Files
+---------------
+README - This file.
+Makefile
+
+JackAnalyzer - Script to run the Run.py file with the latest version of python3
+JackAnalyzer.py
+Consts.py
+JackTokenizer.py
+CompilationEngine.py
+SymbolTable.py
+Run.py
+VMWriter.py
+-------
+
+
