@@ -1,0 +1,2 @@
+#!/bin/sh
+python3 Assembler.py $1
